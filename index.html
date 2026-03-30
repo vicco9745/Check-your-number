@@ -321,6 +321,7 @@ function startVoice(){
 </script>
 
 </body>
+
 <script>
 function startVoice() {
 
@@ -336,16 +337,15 @@ function startVoice() {
   recognition.lang = "hi-IN";
 
   recognition.start();
-
   mic.style.color = "red";
 
   recognition.onresult = function(event) {
     let text = event.results[0][0].transcript.toLowerCase();
 
-    searchBox.value = text;
+    // 👉 हिंदी को इंग्लिश में बदलो
+    text = convertToEnglish(text);
 
-    // 👉 English + इंग्लिश दोनों match
-    handleSearch(text);
+    searchBox.value = text;
 
     mic.style.color = "white";
   };
@@ -361,27 +361,18 @@ function startVoice() {
 }
 
 
-// 🔍 SEARCH SYSTEM (FIXED)
-function handleSearch(text) {
+// 🔥 हिंदी → इंग्लिश कन्वर्ट
+function convertToEnglish(text) {
 
-  if (text.includes("finance") || text.includes("फाइनेंस")) {
-    document.getElementById("result").innerHTML = "📈 Finance News दिखा रहा हूँ";
-  }
+  if (text.includes("फाइनेंस")) return "finance";
+  if (text.includes("न्यूज") || text.includes("न्यूज़")) return "news";
+  if (text.includes("बैंक")) return "bank";
+  if (text.includes("वीडियो")) return "video";
 
-  else if (text.includes("bank") || text.includes("बैंक")) {
-    document.getElementById("result").innerHTML = "🏦 Bank News दिखा रहा हूँ";
-  }
-
-  else if (text.includes("video") || text.includes("वीडियो")) {
-    document.getElementById("result").innerHTML = "🎥 Video दिखा रहा हूँ";
-  }
-
-  else {
-    document.getElementById("result").innerHTML = "❌ Result नहीं मिला";
-  }
-
+  // default वही text
+  return text;
 }
-</script>
+
 </script>
 
 
