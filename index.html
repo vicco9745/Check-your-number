@@ -330,23 +330,24 @@ function startVoice() {
   }
 
   const mic = document.getElementById("micBtn");
-  const searchBox = document.querySelector("input"); // ऊपर वाला search
+  const searchBox = document.querySelector("input");
 
   const recognition = new webkitSpeechRecognition();
   recognition.lang = "hi-IN";
 
   recognition.start();
 
-  // mic ON (लाल दिखे)
   mic.style.color = "red";
 
   recognition.onresult = function(event) {
-    let text = event.results[0][0].transcript;
+    let text = event.results[0][0].transcript.toLowerCase();
 
-    // 👉 यही main काम — search box में डाल
     searchBox.value = text;
 
-    mic.style.color = "white"; // वापस normal
+    // 👉 हिंदी + इंग्लिश दोनों match
+    handleSearch(text);
+
+    mic.style.color = "white";
   };
 
   recognition.onerror = function(event) {
@@ -358,6 +359,29 @@ function startVoice() {
     mic.style.color = "white";
   };
 }
+
+
+// 🔍 SEARCH SYSTEM (FIXED)
+function handleSearch(text) {
+
+  if (text.includes("finance") || text.includes("फाइनेंस")) {
+    document.getElementById("result").innerHTML = "📈 Finance News दिखा रहा हूँ";
+  }
+
+  else if (text.includes("bank") || text.includes("बैंक")) {
+    document.getElementById("result").innerHTML = "🏦 Bank News दिखा रहा हूँ";
+  }
+
+  else if (text.includes("video") || text.includes("वीडियो")) {
+    document.getElementById("result").innerHTML = "🎥 Video दिखा रहा हूँ";
+  }
+
+  else {
+    document.getElementById("result").innerHTML = "❌ Result नहीं मिला";
+  }
+
+}
+</script>
 </script>
 
 
