@@ -203,8 +203,11 @@ body{
 <div class="search-container">
   <div class="search-wrapper">
 
-    <span class="material-symbols-outlined icon search-icon">search</span>
+    <input type="text" id="searchBox" placeholder="Search...">
 
+<span class="material-symbols-outlined" id="micBtn" onclick="startVoice()">mic</span>
+
+<div id="result"></div>
     <input 
       type="text" 
       id="search"
