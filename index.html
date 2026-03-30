@@ -203,11 +203,8 @@ body{
 <div class="search-container">
   <div class="search-wrapper">
 
-    <input type="text" id="searchBox" placeholder="Search...">
+    <span class="material-symbols-outlined icon search-icon">search</span>
 
-<span class="material-symbols-outlined" id="micBtn" onclick="startVoice()">mic</span>
-
-<div id="result"></div>
     <input 
       type="text" 
       id="search"
@@ -218,6 +215,7 @@ body{
 
 
 <span class="material-symbols-outlined icon mic-icon" id="micBtn" onclick="startVoice()">mic</span>
+
 
 
 
@@ -333,76 +331,6 @@ function startVoice() {
   }
 
   const mic = document.getElementById("micBtn");
-  const searchBox = document.getElementById("searchBox");
-
-  const recognition = new webkitSpeechRecognition();
-  recognition.lang = "en-US";
-
-  recognition.start();
-  mic.style.color = "red";
-
-  recognition.onresult = function(event) {
-    let text = event.results[0][0].transcript.toLowerCase();
-
-    searchBox.value = text;
-
-    doSearch(text); // 🔥 जरूरी
-
-    mic.style.color = "white";
-  };
-
-  recognition.onerror = function(event) {
-    mic.style.color = "white";
-    alert("Error: " + event.error);
-  };
-
-  recognition.onend = function() {
-    mic.style.color = "white";
-  };
-}
-
-
-// 🔍 SEARCH FUNCTION
-function doSearch(text) {
-
-  let resultBox = document.getElementById("result");
-
-  if (text.includes("news")) {
-    resultBox.innerHTML = "📰 News दिखा रहा हूँ";
-  }
-
-  else if (text.includes("finance")) {
-    resultBox.innerHTML = "📈 Finance News दिखा रहा हूँ";
-  }
-
-  else if (text.includes("bank")) {
-    resultBox.innerHTML = "🏦 Bank News दिखा रहा हूँ";
-  }
-
-  else {
-    resultBox.innerHTML = "❌ कुछ नहीं मिला";
-  }
-}
-</script>
-
-
-
-
-
-
-
-
-
-  
-<script>
-function startVoice() {
-
-  if (!('webkitSpeechRecognition' in window)) {
-    alert("Chrome use करो");
-    return;
-  }
-
-  const mic = document.getElementById("micBtn");
   const searchBox = document.querySelector("input");
 
   const recognition = new webkitSpeechRecognition();
@@ -431,8 +359,5 @@ function startVoice() {
   };
 }
 </script>
-
-</script>
-
 
 </html>
