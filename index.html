@@ -323,6 +323,118 @@ function startVoice(){
 </body>
 
 <script>
+
+// ================= NEWS LOAD =================
+let allArticles = [];
+
+fetch('finance.json')
+.then(r => r.json())
+.then(data => {
+  allArticles = data.articles;
+  showNews(allArticles);
+});
+
+// ================= SHOW NEWS =================
+function showNews(data){
+
+  if(data.length === 0){
+    document.getElementById("news").innerHTML =
+      `<div id="loading">Koi news nahi mili 😕</div>`;
+    return;
+  }
+
+  let html = "";
+
+  data.forEach(a => {
+    html += `
+    <div class="card">
+      <h3>${a.title}</h3>
+      <p>${a.description || ""}</p>
+    </div>`;
+  });
+
+  document.getElementById("news").innerHTML = html;
+}
+
+// ================= SEARCH =================
+function searchNews(){
+
+  const input = document.getElementById("search").value
+                .toLowerCase()
+                .trim();
+
+  const filtered = allArticles.filter(a => {
+
+    const title = (a.title || "").toLowerCase();
+    const desc  = (a.description || "").toLowerCase();
+
+    // 🔥 SMART MATCH
+    return input.split(" ").some(word =>
+      title.includes(word) || desc.includes(word)
+    );
+
+  });
+
+  showNews(filtered);
+}
+
+
+// ================= VOICE SEARCH =================
+function startVoice(){
+
+  if(!('webkitSpeechRecognition' in window)){
+    alert("Chrome use करो");
+    return;
+  }
+
+  const micBtn = document.getElementById("micBtn");
+  const searchBox = document.getElementById("search");
+
+  const recognition = new webkitSpeechRecognition();
+
+  recognition.lang = "en-US"; // 👉 English voice
+
+  micBtn.classList.add("listening");
+
+  recognition.start();
+
+  recognition.onresult = function(event){
+
+    let text = event.results[0][0].transcript;
+
+    // 🔥 CLEAN TEXT (MAIN FIX)
+    text = text
+      .trim()
+      .toLowerCase()
+      .replace(/[\u200B-\u200D\uFEFF]/g, '');
+
+    searchBox.value = text;
+
+    // 🔥 FORCE INPUT EVENT
+    searchBox.dispatchEvent(new Event('input', { bubbles: true }));
+
+    // 🔥 BACKUP SEARCH
+    searchNews();
+  };
+
+  recognition.onerror = function(e){
+    alert("Error: " + e.error);
+  };
+
+  recognition.onend = function(){
+    micBtn.classList.remove("listening");
+  };
+}
+
+
+
+
+
+
+
+
+
+  
 function startVoice() {
 
   if (!('webkitSpeechRecognition' in window)) {
