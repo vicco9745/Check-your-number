@@ -337,19 +337,27 @@ function startVoice() {
   const recognition = new webkitSpeechRecognition();
 
   // 👉 English में सुनो
-  recognition.lang = "en-US";
+  recognition.onresult = function(event){
 
-  recognition.start();
-  mic.style.color = "red";
+  let text = event.results[0][0].transcript;
 
-  recognition.onresult = function(event) {
-    let text = event.results[0][0].transcript.toLowerCase();
+  // 🔥 CLEAN TEXT (बहुत जरूरी)
+  text = text
+    .toLowerCase()
+    .trim()
+    .replace(/[\u200B-\u200D\uFEFF]/g, '');
 
-    searchBox.value = text;
+  // 👉 SAME SEARCH BOX में डाल
+  const searchBox = document.getElementById("search");
+  searchBox.value = text;
 
-    mic.style.color = "white";
-  };
+  // 🔥 SAME जगह trigger (जहाँ typing होता है)
+  searchNews();
 
+};
+
+
+  
   recognition.onerror = function(event) {
     mic.style.color = "white";
     alert("Error: " + event.error);
