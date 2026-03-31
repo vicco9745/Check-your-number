@@ -338,6 +338,28 @@ function startVoice() {
 
   // 👉 English में सुनो
   
+recognition.lang = "en-US";
+
+  recognition.start();
+  mic.style.color = "red";
+
+  recognition.onresult = function(event) {
+    let text = event.results[0][0].transcript.toLowerCase();
+
+    searchBox.value = text;
+
+    mic.style.color = "white";
+  };
+
+  recognition.onerror = function(event) {
+    mic.style.color = "white";
+    alert("Error: " + event.error);
+  };
+
+  recognition.onend = function() {
+    mic.style.color = "white";
+  };
+}
 recognition.onresult = function(event){
 
   let text = event.results[0][0].transcript;
@@ -363,6 +385,13 @@ recognition.onresult = function(event){
   searchNews();
 
 };
+
+
+
+
+
+
+  
 
   
   recognition.onerror = function(event) {
