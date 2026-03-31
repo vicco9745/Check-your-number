@@ -25,10 +25,6 @@
   color: white !important;
   font-size: 28px;
 }
-    
-
-
-
 
 *{
   margin:0;
@@ -196,7 +192,6 @@ body{
   </span>
 </a>
 
-
 <div class="header">Finance News</div>
 
 <!-- SEARCH -->
@@ -213,24 +208,16 @@ body{
       oninput="searchNews()"
     >
 
-
 <span class="material-symbols-outlined icon mic-icon" id="micBtn" onclick="startVoice()">mic</span>
-
-
-
 
   </div>
 </div>
-
-<!-- Voice toast -->
-
 
 <div id="news">
   <div id="loading">Loading...</div>
 </div>
 
 <script>
-
 
 let allArticles = [];
 
@@ -274,46 +261,47 @@ function searchNews(){
   showNews(filtered);
 }
 
-/* Voice Search */
+/* Voice Search (FIXED ONLY THIS PART) */
 function startVoice(){
 
   if(!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)){
-    alert("Aapka browser voice search support nahi karta. Chrome use karein.");
+    alert("Chrome use karein");
     return;
   }
 
-  const micBtn    = document.getElementById("micBtn");
-  const statusDiv = document.getElementById("voiceStatus");
+  const micBtn = document.getElementById("micBtn");
   const searchBox = document.getElementById("search");
 
   const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
-  recognition.lang = "hi-IN";
-  recognition.interimResults = false;
-  recognition.maxAlternatives = 1;
+
+  recognition.lang = "en-US";
 
   micBtn.classList.add("listening");
-  micBtn.textContent = "mic_off";
-  statusDiv.style.display = "block";
-
   recognition.start();
 
   recognition.onresult = function(event){
-    const text = event.results[0][0].transcript;
+
+    let text = event.results[0][0].transcript;
+
+    text = text
+      .toLowerCase()
+      .trim()
+      .replace(/[\u200B-\u200D\uFEFF]/g, '');
+
+    searchBox.value = "";
     searchBox.value = text;
+
+    searchBox.dispatchEvent(new Event('input', { bubbles: true }));
+
     searchNews();
   };
 
   recognition.onerror = function(e){
-    console.error("Voice error:", e.error);
-    if(e.error === "not-allowed"){
-      alert("Mic permission do pehle — browser settings mein allow karein.");
-    }
+    alert("Error: " + e.error);
   };
 
   recognition.onend = function(){
     micBtn.classList.remove("listening");
-    micBtn.textContent = "mic";
-    statusDiv.style.display = "none";
   };
 
 }
@@ -321,128 +309,4 @@ function startVoice(){
 </script>
 
 </body>
-
-<script>
-
-function startVoice() {
-
-  if (!('webkitSpeechRecognition' in window)) {
-    alert("Chrome use करो");
-    return;
-  }
-
-  const mic = document.getElementById("micBtn");
-  const searchBox = document.querySelector("input");
-
-  const recognition = new webkitSpeechRecognition();
-
-  // 👉 English में सुनो
-  
-// Make sure you have these elements in your HTML:
-// <input type="text" id="search" placeholder="Search...">
-// <button id="micButton">🎤</button>
-
-const mic = document.getElementById("micButton");
-const searchBox = document.getElementById("search");
-
-// Check if browser supports speech recognition
-if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
-  alert("Your browser doesn't support voice recognition. Please use Chrome or Edge.");
-  mic.style.display = "none";
-}
-
-// Setup speech recognition
-const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-const recognition = new SpeechRecognition();
-
-recognition.lang = "en-US";
-recognition.continuous = false;  // Stop after one result
-recognition.interimResults = false;  // Get final result only
-
-// Start voice recognition when mic is clicked
-mic.addEventListener("click", function() {
-  recognition.start();
-  mic.style.color = "red";
-  mic.style.backgroundColor = "#ffcccc"; // Optional visual feedback
-});
-
-// When speech is recognized
-recognition.onresult = function(event) {
-  let text = event.results[0][0].transcript;
-  
-  // Clean the text
-  text = text
-    .toLowerCase()
-    .trim()
-    .replace(/[\u200B-\u200D\uFEFF]/g, '')
-    .replace(/[^\w\s]/g, ''); // Remove special characters
-  
-  // Set the text in search box
-  searchBox.value = text;
-  
-  // Trigger search function
-  searchNews(); // Make sure this function exists
-  
-  // Visual feedback - success
-  mic.style.color = "white";
-  mic.style.backgroundColor = ""; // Reset background
-};
-
-// Handle errors
-recognition.onerror = function(event) {
-  console.error("Speech recognition error:", event.error);
-  mic.style.color = "white";
-  mic.style.backgroundColor = "";
-  
-  if (event.error === "not-allowed") {
-    alert("Please allow microphone access to use voice search.");
-  } else if (event.error === "no-speech") {
-    // Silent fail - user just didn't speak
-    console.log("No speech detected");
-  } else {
-    alert("Error: " + event.error);
-  }
-};
-
-// Reset mic color when recognition ends
-recognition.onend = function() {
-  mic.style.color = "white";
-  mic.style.backgroundColor = "";
-};
-
-// Function to search news (you need to implement this)
-function searchNews() {
-  const query = searchBox.value.trim();
-  
-  if (query === "") {
-    return;
-  }
-  
-  console.log("Searching for:", query);
-  
-  // Example: Fetch news from API
-  // fetch(`https://gnews.io/api/v4/search?q=${query}&token=YOUR_API_KEY`)
-  //   .then(response => response.json())
-  //   .then(data => {
-  //     displayResults(data.articles);
-  //   })
-  //   .catch(error => console.error("Error fetching news:", error));
-  
-  // Or call your existing search function
-  // Your existing search logic here
-}
-
-// Optional: Auto-search when user types
-searchBox.addEventListener("input", function() {
-  searchNews();
-});
-
-
-
-
-
-
-  
-</script>
-
 </html>
